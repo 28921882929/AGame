@@ -130,7 +130,7 @@ export class ResourceManager extends Singleton<ResourceManager> {
                 this.load(path, undefined, bundleName)
                     .then(() => {
                         loaded++;
-                        this._loadingProgress = loaded / total;
+                        this._loadingProgress = (loaded + failed) / total;
                         if (loaded + failed === total) {
                             this._loadingProgress = 1;
                             if (failed > 0) {

@@ -59,9 +59,14 @@ export class UIBase extends cc.Component {
      * 关闭自己
      */
     public close(): void {
-        // 动态导入避免循环依赖
+        if (!this.uiName) {
+            console.warn("[UIBase] Cannot close UI with empty uiName");
+            return;
+        }
         import("../Manager/UIManager").then(module => {
             module.UIManager.instance.close(this.uiName);
+        }).catch(err => {
+            console.error("[UIBase] Failed to close UI:", err);
         });
     }
 

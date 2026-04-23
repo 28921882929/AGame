@@ -64,7 +64,7 @@ export class PanelBase extends UIBase {
     }
 
     /**
-     * 显示动画（淡入+缩放）
+     * 显示动画（缩放）
      */
     public async playOpenAnim(): Promise<void> {
         this._isPlayingAnim = true;
@@ -86,7 +86,7 @@ export class PanelBase extends UIBase {
     }
 
     /**
-     * 关闭动画（淡出+缩放）
+     * 关闭动画（缩放）
      */
     public async playCloseAnim(): Promise<void> {
         this._isPlayingAnim = true;

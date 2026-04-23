@@ -24,7 +24,7 @@ export class GameManager extends Singleton<GameManager> {
 
     /** 当前状态 */
     public get currentState(): GameState {
-        return this._stateMachine.currentState?.name as GameState || GameState.Launch;
+        return (this._stateMachine.currentState?.name as GameState) || GameState.Launch;
     }
 
     /** 是否已初始化 */
@@ -130,6 +130,7 @@ export class GameManager extends Singleton<GameManager> {
         } catch (e) {
             this._logger.error("GameManager", "Loading failed", e);
             UIManager.instance.hideLoading();
+            this.changeState(GameState.MainMenu);
         }
     }
 
@@ -191,7 +192,7 @@ export class GameManager extends Singleton<GameManager> {
     public pause(): void {
         if (!this._stateMachine.is(GameState.Playing)) return;
         this.changeState(GameState.Paused);
-        EventCenter.instance.emit("game:pause", undefined);
+        EventCenter.instance.emit("game:pause");
     }
 
     /**
@@ -200,7 +201,7 @@ export class GameManager extends Singleton<GameManager> {
     public resume(): void {
         if (!this._stateMachine.is(GameState.Paused)) return;
         this.changeState(GameState.Playing);
-        EventCenter.instance.emit("game:resume", undefined);
+        EventCenter.instance.emit("game:resume");
     }
 
     /**

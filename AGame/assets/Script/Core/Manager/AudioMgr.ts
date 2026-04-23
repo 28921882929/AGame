@@ -213,7 +213,7 @@ export class AudioMgr extends Singleton<AudioMgr> {
      */
     public preload(paths: string[]): Promise<void> {
         return new Promise((resolve, reject) => {
-            cc.resources.load(paths.map(p => p), cc.AudioClip, (err) => {
+            cc.resources.load(paths, cc.AudioClip, (err) => {
                 if (err) {
                     this._logger.error("AudioMgr", "Failed to preload audio", err);
                     reject(err);

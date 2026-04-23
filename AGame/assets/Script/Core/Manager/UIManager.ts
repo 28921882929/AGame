@@ -84,7 +84,7 @@ export class UIManager extends Singleton<UIManager> {
         return new Promise<T | null>((resolve) => {
             const path = `${UI_PATH_PREFIX}${uiName}`;
 
-            cc.resources.load(path, cc.Prefab, (err, prefab: cc.Prefab) => {
+            cc.resources.load(path, cc.Prefab, async (err, prefab: cc.Prefab) => {
                 if (err) {
                     this._logger.error("UIManager", `Failed to load UI: ${uiName}`, err);
                     resolve(null);

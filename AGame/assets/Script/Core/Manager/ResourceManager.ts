@@ -4,15 +4,6 @@ import { Singleton } from "../Base/Singleton";
 import { Logger } from "../Utils/Logger";
 
 /**
- * 加载结果
- */
-export interface LoadResult<T> {
-    data: T;
-    bundle: string;
-    path: string;
-}
-
-/**
  * 资源管理器
  * 管理资源加载、引用计数和释放
  */
@@ -126,7 +117,9 @@ export class ResourceManager extends Singleton<ResourceManager> {
         return new Promise((resolve, reject) => {
             const bundleName = bundle || "resources";
             let loaded = 0;
+            let failed = 0;
             const total = paths.length;
+            const failedPaths: string[] = [];
 
             if (total === 0) {
                 resolve();
@@ -138,17 +131,24 @@ export class ResourceManager extends Singleton<ResourceManager> {
                     .then(() => {
                         loaded++;
                         this._loadingProgress = loaded / total;
-                        if (loaded === total) {
+                        if (loaded + failed === total) {
                             this._loadingProgress = 1;
-                            resolve();
+                            if (failed > 0) {
+                                reject(new Error(`Preload failed for ${failed} resource(s): ${failedPaths.join(", ")}`));
+                            } else {
+                                resolve();
+                            }
                         }
                     })
                     .catch(err => {
                         this._logger.error("ResourceManager", `Preload failed: ${path}`, err);
+                        failed++;
+                        failedPaths.push(path);
                         loaded++;
                         this._loadingProgress = loaded / total;
-                        if (loaded === total) {
-                            resolve();
+                        if (loaded + failed === total) {
+                            this._loadingProgress = 1;
+                            reject(new Error(`Preload failed for ${failed} resource(s): ${failedPaths.join(", ")}`));
                         }
                     });
             });

@@ -118,7 +118,7 @@ export class UIManager extends Singleton<UIManager> {
                 ui.onOpen(data);
 
                 // 播放动画
-                ui.playOpenAnim();
+                await ui.playOpenAnim();
 
                 this._logger.debug("UIManager", `UI opened: ${uiName}`);
                 resolve(ui);
@@ -152,6 +152,8 @@ export class UIManager extends Singleton<UIManager> {
 
             // 处理弹窗队列
             this._processPopupQueue();
+        }).catch((err) => {
+            this._logger.error("UIManager", `Close animation failed: ${uiName}`, err);
         });
     }
 

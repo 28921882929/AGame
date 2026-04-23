@@ -79,6 +79,7 @@ export class NodePool {
                     return null;
                 }
             } else {
+                console.warn(`[NodePool] Pool is empty and autoExpand is disabled`);
                 this._missCount++;
                 return null;
             }

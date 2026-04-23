@@ -20,7 +20,12 @@ export interface IState {
  */
 export class StateMachine {
     /** 当前状态 */
-    public currentState: IState | null = null;
+    private _currentState: IState | null = null;
+
+    /** 获取当前状态 */
+    public get currentState(): IState | null {
+        return this._currentState;
+    }
 
     /** 所有注册的状态 */
     private _states: Map<string, IState> = new Map();
@@ -55,12 +60,12 @@ export class StateMachine {
             return;
         }
 
-        const prevState = this.currentState;
+        const prevState = this._currentState;
         if (prevState && prevState.onExit) {
             prevState.onExit(name);
         }
 
-        this.currentState = newState;
+        this._currentState = newState;
 
         if (newState.onEnter) {
             newState.onEnter(prevState ? prevState.name : null);
@@ -80,15 +85,15 @@ export class StateMachine {
             console.error(`[StateMachine] State "${name}" not found`);
             return;
         }
-        this.currentState = state;
+        this._currentState = state;
     }
 
     /**
      * 每帧更新（需手动调用）
      */
     public update(dt: number): void {
-        if (this.currentState && this.currentState.onUpdate) {
-            this.currentState.onUpdate(dt);
+        if (this._currentState && this._currentState.onUpdate) {
+            this._currentState.onUpdate(dt);
         }
     }
 
@@ -96,7 +101,7 @@ export class StateMachine {
      * 检查是否在指定状态
      */
     public is(name: string): boolean {
-        return this.currentState !== null && this.currentState.name === name;
+        return this._currentState !== null && this._currentState.name === name;
     }
 
     /**
@@ -118,6 +123,6 @@ export class StateMachine {
      */
     public clear(): void {
         this._states.clear();
-        this.currentState = null;
+        this._currentState = null;
     }
 }

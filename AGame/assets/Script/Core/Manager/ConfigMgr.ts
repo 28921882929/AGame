@@ -119,7 +119,7 @@ export class ConfigMgr extends Singleton<ConfigMgr> {
 
         // 尝试从数组中查找
         if (Array.isArray(table)) {
-            return table.find((item: any) => item.id == id);
+            return table.find((item: any) => String(item.id) === String(id));
         }
 
         if (Array.isArray(table.items)) {

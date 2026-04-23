@@ -4,8 +4,10 @@
  * 单例基类
  * 所有 Manager 继承此类实现单例模式
  */
-export class Singleton<T> {
+export class Singleton {
     private static _instances: Map<Function, any> = new Map();
+
+    protected constructor() {}
 
     /**
      * 获取单例实例

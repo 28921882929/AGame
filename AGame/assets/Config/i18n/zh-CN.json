@@ -1,0 +1,33 @@
+{
+    "ui": {
+        "start_game": "开始游戏",
+        "settings": "设置",
+        "quit": "退出",
+        "confirm": "确定",
+        "cancel": "取消",
+        "close": "关闭",
+        "loading": "加载中...",
+        "welcome": "欢迎，{name}"
+    },
+    "game": {
+        "score": "得分：{score}",
+        "level": "第{n}关",
+        "game_over": "游戏结束",
+        "victory": "胜利！",
+        "defeat": "失败",
+        "pause": "暂停",
+        "resume": "继续",
+        "restart": "重新开始"
+    },
+    "item": {
+        "coin": "金币",
+        "diamond": "钻石",
+        "energy": "体力",
+        "key": "钥匙"
+    },
+    "error": {
+        "network_error": "网络错误，请重试",
+        "load_failed": "加载失败",
+        "unknown": "未知错误"
+    }
+}

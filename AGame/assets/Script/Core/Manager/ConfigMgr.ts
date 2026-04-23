@@ -123,7 +123,7 @@ export class ConfigMgr extends Singleton<ConfigMgr> {
         }
 
         if (Array.isArray(table.items)) {
-            return table.items.find((item: any) => item.id == id);
+            return table.items.find((item: any) => String(item.id) === String(id));
         }
 
         return null;

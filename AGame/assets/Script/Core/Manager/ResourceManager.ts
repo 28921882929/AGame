@@ -144,8 +144,7 @@ export class ResourceManager extends Singleton<ResourceManager> {
                         this._logger.error("ResourceManager", `Preload failed: ${path}`, err);
                         failed++;
                         failedPaths.push(path);
-                        loaded++;
-                        this._loadingProgress = loaded / total;
+                        this._loadingProgress = (loaded + failed) / total;
                         if (loaded + failed === total) {
                             this._loadingProgress = 1;
                             reject(new Error(`Preload failed for ${failed} resource(s): ${failedPaths.join(", ")}`));

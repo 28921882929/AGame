@@ -1,0 +1,51 @@
+{
+    "items": [
+        {
+            "id": "sword_L",
+            "name": "item.sword",
+            "icon": "Items/sword",
+            "shape": [
+                [true, true, true],
+                [true, false, false]
+            ],
+            "canRotate": true,
+            "rarity": "rare",
+            "towerType": "melee"
+        },
+        {
+            "id": "shield_2x2",
+            "name": "item.shield",
+            "icon": "Items/shield",
+            "shape": [
+                [true, true],
+                [true, true]
+            ],
+            "canRotate": false,
+            "rarity": "common",
+            "towerType": "defense"
+        },
+        {
+            "id": "potion_1x1",
+            "name": "item.potion",
+            "icon": "Items/potion",
+            "shape": [
+                [true]
+            ],
+            "canRotate": false,
+            "rarity": "common",
+            "towerType": ""
+        },
+        {
+            "id": "bow_T",
+            "name": "item.bow",
+            "icon": "Items/bow",
+            "shape": [
+                [true, false, true],
+                [true, true, true]
+            ],
+            "canRotate": true,
+            "rarity": "epic",
+            "towerType": "ranged"
+        }
+    ]
+}

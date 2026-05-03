@@ -1,6 +1,7 @@
 import { BackpackItem } from "../Model/BackpackItem";
 import { BackpackModel } from "../Model/BackpackModel";
 import { ItemConfig } from "../Config/ItemConfig";
+import { BackpackManager } from "../Manager/BackpackManager";
 
 /**
  * 背包模型单元测试
@@ -17,6 +18,7 @@ export default class BackpackModelTest extends cc.Component {
         this._testCollision();
         this._testRotate();
         this._testValidate();
+        this._testManagerIntegration();
         cc.log("=== 所有测试通过 ===");
     }
 
@@ -168,5 +170,61 @@ export default class BackpackModelTest extends cc.Component {
         console.assert(result.valid === true, "有效状态应通过校验");
 
         cc.log("✓ testValidate 通过");
+    }
+
+    private _testManagerIntegration(): void {
+        const manager = BackpackManager.instance;
+        const model = manager.createBackpack();
+
+        // 创建几个测试物品
+        const items = [
+            manager.createItem({
+                id: "sword_L", name: "item.sword", icon: "Items/sword",
+                shape: [[true, true, true], [true, false, false]],
+                canRotate: true, rarity: "rare", towerType: "melee"
+            }),
+            manager.createItem({
+                id: "shield_2x2", name: "item.shield", icon: "Items/shield",
+                shape: [[true, true], [true, true]],
+                canRotate: false, rarity: "common", towerType: "defense"
+            }),
+            manager.createItem({
+                id: "potion_1x1", name: "item.potion", icon: "Items/potion",
+                shape: [[true]],
+                canRotate: false, rarity: "common", towerType: ""
+            })
+        ];
+
+        // 放置物品
+        manager.addItemToCurrent(items[0], 0, 0);  // L 形放左上角
+        manager.addItemToCurrent(items[1], 2, 2);  // 2×2 放中间
+        manager.addItemToCurrent(items[2], 5, 5);  // 1×1 放右下角
+
+        // 验证
+        console.assert(model.getAllItems().length === 3, "应有 3 个物品");
+        console.assert(model.getItemAt(0, 0)?.configId === "sword_L", "(0,0) 应为 sword_L");
+        console.assert(model.getItemAt(2, 2)?.configId === "shield_2x2", "(2,2) 应为 shield_2x2");
+        console.assert(model.getItemAt(5, 5)?.configId === "potion_1x1", "(5,5) 应为 potion_1x1");
+
+        // 数据校验
+        const validation = model.validate();
+        console.assert(validation.valid, "集成测试数据应一致");
+        if (!validation.valid) {
+            cc.error("校验失败:", validation.errors);
+        }
+
+        // 测试旋转
+        const rotateSuccess = manager.rotateItemInCurrent(items[0].id);
+        console.assert(rotateSuccess === true, "sword_L 应可旋转");
+        console.assert(items[0].rotation === 90, "旋转后应为 90°");
+
+        // 不可旋转的物品
+        const rotateFail = manager.rotateItemInCurrent(items[1].id);
+        console.assert(rotateFail === false, "shield_2x2 不可旋转");
+
+        cc.log("✓ testManagerIntegration 通过");
+
+        // 清理
+        manager.clear();
     }
 }

@@ -1,4 +1,5 @@
 import { BackpackItem } from "../Model/BackpackItem";
+import { BackpackModel } from "../Model/BackpackModel";
 import { ItemConfig } from "../Config/ItemConfig";
 
 /**
@@ -12,10 +13,14 @@ export default class BackpackModelTest extends cc.Component {
     protected start(): void {
         this._testLShapeRotation();
         this._testOccupiedCells();
+        this._testPlaceAndRemove();
+        this._testCollision();
+        this._testRotate();
+        this._testValidate();
         cc.log("=== 所有测试通过 ===");
     }
 
-    private _createLShapeItem(): BackpackItem {
+    private _createLShapeItem(id: string = "test_1"): BackpackItem {
         const config: ItemConfig = {
             id: "sword_L",
             name: "item.sword",
@@ -28,7 +33,7 @@ export default class BackpackModelTest extends cc.Component {
             rarity: "rare",
             towerType: "melee"
         };
-        return new BackpackItem("test_1", config);
+        return new BackpackItem(id, config);
     }
 
     private _testLShapeRotation(): void {
@@ -86,5 +91,82 @@ export default class BackpackModelTest extends cc.Component {
         console.assert(has00 && has01 && has02 && has10, "应包含所有预期格子");
 
         cc.log("✓ testOccupiedCells 通过");
+    }
+
+    private _testPlaceAndRemove(): void {
+        const model = new BackpackModel();
+        const item = this._createLShapeItem();
+
+        // 正常放置
+        const success = model.placeItem(item, 0, 0);
+        console.assert(success === true, "应在 (0,0) 成功放置");
+        console.assert(model.getItemAt(0, 0) === item, "(0,0) 应为此物品");
+        console.assert(model.getItemAt(0, 1) === item, "(0,1) 应为此物品");
+        console.assert(model.getItemAt(0, 2) === item, "(0,2) 应为此物品");
+        console.assert(model.getItemAt(1, 0) === item, "(1,0) 应为此物品");
+        console.assert(model.getItemAt(1, 1) === null, "(1,1) 应为空");
+
+        // 移除
+        model.removeItem(item.id);
+        console.assert(model.getItemAt(0, 0) === null, "移除后 (0,0) 应为空");
+        console.assert(model.getItemAt(0, 2) === null, "移除后 (0,2) 应为空");
+
+        cc.log("✓ testPlaceAndRemove 通过");
+    }
+
+    private _testCollision(): void {
+        const model = new BackpackModel();
+        const item1 = this._createLShapeItem();
+        const item2 = this._createLShapeItem("test_2");
+
+        // 放置第一个物品
+        model.placeItem(item1, 0, 0);
+
+        // 尝试在重叠位置放置
+        const fail = model.placeItem(item2, 0, 0);
+        console.assert(fail === false, "重叠放置应失败");
+
+        // 尝试在边界外放置
+        const fail2 = model.placeItem(item2, 5, 5);
+        console.assert(fail2 === false, "越界放置应失败");
+
+        // 在不重叠位置放置
+        const success = model.placeItem(item2, 2, 2);
+        console.assert(success === true, "不重叠放置应成功");
+
+        cc.log("✓ testCollision 通过");
+    }
+
+    private _testRotate(): void {
+        const model = new BackpackModel();
+        const item = this._createLShapeItem();
+
+        // 放在底部区域，给旋转留出空间
+        model.placeItem(item, 3, 0);
+
+        // 旋转前形状占据 (3,0)(3,1)(3,2)(4,0)
+        const success = model.rotateItem(item.id);
+        console.assert(success === true, "应成功旋转");
+        console.assert(item.rotation === 90, "旋转后角度应为 90°");
+
+        // 验证旧位置已清空
+        console.assert(model.getItemAt(3, 2) === null, "旋转后 (3,2) 应为空");
+
+        // 验证新位置已占用
+        console.assert(model.getItemAt(3, 0) === item, "旋转后 (3,0) 应为物品");
+        console.assert(model.getItemAt(5, 0) === item, "旋转后 (5,0) 应为物品");
+
+        cc.log("✓ testRotate 通过");
+    }
+
+    private _testValidate(): void {
+        const model = new BackpackModel();
+        const item = this._createLShapeItem();
+
+        model.placeItem(item, 0, 0);
+        const result = model.validate();
+        console.assert(result.valid === true, "有效状态应通过校验");
+
+        cc.log("✓ testValidate 通过");
     }
 }

@@ -3,6 +3,7 @@
 import { Singleton } from "../Base/Singleton";
 import { Logger } from "../Utils/Logger";
 import { GameState } from "../State/GameState";
+import { BackpackItemPlacedEvent, BackpackItemRemovedEvent, BackpackItemRotatedEvent } from "../../Backpack/Config/ItemConfig";
 
 /**
  * 全局事件映射
@@ -18,6 +19,9 @@ export interface EventMap {
     "resource:loaded": { paths: string[] };
     "audio:bgm_change": { name: string };
     "player:coin_change": { old: number; new: number };
+    "backpack:item_placed": BackpackItemPlacedEvent;
+    "backpack:item_removed": BackpackItemRemovedEvent;
+    "backpack:item_rotated": BackpackItemRotatedEvent;
 }
 
 interface EventListener {

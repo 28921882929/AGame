@@ -51,3 +51,6 @@ Thumbs.db
 #//////////////////////////
 
 .vscode/
+
+# Superpowers brainstorming sessions
+.superpowers/

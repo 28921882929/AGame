@@ -27,7 +27,7 @@ export class TimerManager extends Singleton<TimerManager> {
     private _nextId: number = 1;
     private _isPaused: boolean = false;
     private _logger = Logger.instance;
-    private _updateHandler: Function = null;
+    private _updateHandler: ((dt: number) => void) | null = null;
 
     protected constructor() {
         super();

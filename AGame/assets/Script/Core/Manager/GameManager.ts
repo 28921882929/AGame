@@ -12,7 +12,7 @@ import { ResourceManager } from "./ResourceManager";
 import { PoolManager } from "./PoolManager";
 import { AudioMgr } from "./AudioMgr";
 import { UIManager } from "./UIManager";
-import { I18nMgr, Language } from "./I18nMgr";
+import { I18nMgr } from "./I18nMgr";
 
 /**
  * 游戏管理器
@@ -102,7 +102,7 @@ export class GameManager extends Singleton<GameManager> {
         this._initialized = true;
 
         // 进入加载状态
-        this.changeState(GameState.Loading);
+        await this.changeState(GameState.Loading);
     }
 
     /**
@@ -126,11 +126,11 @@ export class GameManager extends Singleton<GameManager> {
             UIManager.instance.hideLoading();
 
             // 加载完成，进入主界面
-            this.changeState(GameState.MainMenu);
+            await this.changeState(GameState.MainMenu);
         } catch (e) {
             this._logger.error("GameManager", "Loading failed", e);
             UIManager.instance.hideLoading();
-            this.changeState(GameState.MainMenu);
+            await this.changeState(GameState.MainMenu);
         }
     }
 
@@ -181,9 +181,9 @@ export class GameManager extends Singleton<GameManager> {
     /**
      * 切换状态
      */
-    public changeState(state: GameState): void {
+    public async changeState(state: GameState): Promise<void> {
         this._logger.debug("GameManager", `State change: ${getGameStateName(this.currentState)} -> ${getGameStateName(state)}`);
-        this._stateMachine.change(state);
+        await this._stateMachine.change(state);
     }
 
     /**
@@ -191,7 +191,7 @@ export class GameManager extends Singleton<GameManager> {
      */
     public pause(): void {
         if (!this._stateMachine.is(GameState.Playing)) return;
-        this.changeState(GameState.Paused);
+        void this.changeState(GameState.Paused);
         EventCenter.instance.emit("game:pause");
     }
 
@@ -200,7 +200,7 @@ export class GameManager extends Singleton<GameManager> {
      */
     public resume(): void {
         if (!this._stateMachine.is(GameState.Paused)) return;
-        this.changeState(GameState.Playing);
+        void this.changeState(GameState.Playing);
         EventCenter.instance.emit("game:resume");
     }
 
@@ -208,21 +208,21 @@ export class GameManager extends Singleton<GameManager> {
      * 开始游戏
      */
     public startGame(): void {
-        this.changeState(GameState.Playing);
+        void this.changeState(GameState.Playing);
     }
 
     /**
      * 游戏结束
      */
     public gameOver(): void {
-        this.changeState(GameState.GameOver);
+        void this.changeState(GameState.GameOver);
     }
 
     /**
      * 返回主菜单
      */
     public backToMain(): void {
-        this.changeState(GameState.MainMenu);
+        void this.changeState(GameState.MainMenu);
     }
 
     /**

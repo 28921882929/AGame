@@ -80,11 +80,9 @@ export class ResourceManager extends Singleton<ResourceManager> {
                     return;
                 }
 
-                // 增加引用计数
-                assets.forEach((_, index) => {
-                    const cacheKey = `${bundleName}:${path}[${index}]`;
-                    this._addRef(cacheKey);
-                });
+                // 增加引用计数（按目录统一计数）
+                const cacheKey = `${bundleName}:${path}`;
+                this._addRef(cacheKey);
 
                 resolve(assets);
             };

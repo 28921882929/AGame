@@ -54,7 +54,6 @@ export class UIManager extends Singleton<UIManager> {
         let layerNode = this._canvas.getChildByName(name);
         if (!layerNode) {
             layerNode = new cc.Node(name);
-            layerNode.addComponent(cc.UITransform);
             layerNode.setContentSize(cc.winSize);
             layerNode.setPosition(0, 0);
             this._canvas.addChild(layerNode);
@@ -265,7 +264,7 @@ export class UIManager extends Singleton<UIManager> {
 
         // 半透明遮罩
         const bg = new cc.Node("bg");
-        bg.addComponent(cc.UITransform).setContentSize(cc.winSize);
+        bg.setContentSize(cc.winSize);
         const sp = bg.addComponent(cc.Sprite);
         sp.spriteFrame = null;  // 需要设置一个白色精灵
         bg.color = new cc.Color(0, 0, 0, 150);

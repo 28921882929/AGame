@@ -7,9 +7,9 @@ export interface IState {
     /** 状态名称 */
     name: string;
     /** 进入状态时调用 */
-    onEnter?(from: string): void;
+    onEnter?(from: string | null): void | Promise<void>;
     /** 退出状态时调用 */
-    onExit?(to: string): void;
+    onExit?(to: string): void | Promise<void>;
     /** 每帧更新 */
     onUpdate?(dt: number): void;
 }
@@ -53,7 +53,7 @@ export class StateMachine {
     /**
      * 切换状态
      */
-    public change(name: string): void {
+    public async change(name: string): Promise<void> {
         const newState = this._states.get(name);
         if (!newState) {
             console.error(`[StateMachine] State "${name}" not found`);
@@ -62,13 +62,13 @@ export class StateMachine {
 
         const prevState = this._currentState;
         if (prevState && prevState.onExit) {
-            prevState.onExit(name);
+            await prevState.onExit(name);
         }
 
         this._currentState = newState;
 
         if (newState.onEnter) {
-            newState.onEnter(prevState ? prevState.name : null);
+            await newState.onEnter(prevState ? prevState.name : null);
         }
 
         if (this.onStateChange) {
